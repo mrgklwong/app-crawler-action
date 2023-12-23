@@ -1,0 +1,41 @@
+name: 'App Crawler'
+description: 'Crawls Android App Using Jetpack App Crawler'
+inputs:
+  app-location:
+    description: 'Provide your app location'
+    required: true
+    default: '/example/debug.apk'
+  app-package-name:
+    description: 'Provide your app package name'
+    required: true
+    default: 'com.wdiodemoapp'
+runs:
+  env:
+    ANDROID_ARCH: x86_64
+    ANDROID_TARGET: google_apis_playstore
+    API_LEVEL: 28
+    ANDROID_BUILD_TOOLS_VERSION: 28.0.3
+    ANDROID_SDK_PACKAGES: system-images;android-28;google_apis_playstore;x86_64 platforms;android-28 build-tools;28.0.3 platform-tools emulator
+    EMULATOR_TIMEOUT: 350
+    EMULATOR_NAME: nexus
+  using: "composite"
+  steps:
+    - run: |
+        echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
+    - run: |
+        yes Y | sdkmanager --licenses
+        sdkmanager --install ${ANDROID_SDK_PACKAGES}
+    - run: |
+        echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
+    - run: |
+        chmod +x ./start_emu_headless.sh
+        EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
+    - run: |
+        chmod a+x ./check_emu.sh
+        ./check_emu.sh
+    - run: | 
+        curl -sS https://dl.google.com/appcrawler/beta1/app-crawler.zip > file.zip
+        unzip file.zip                                 
+        rm file.zip
+    - run: |
+        java -jar app-crawler/crawl_launcher.jar --apk-file ${{inputs.app-location}} --android-sdk $ANDROID_HOME/ --app-package-name ${{ inputs.app-package-name }}
