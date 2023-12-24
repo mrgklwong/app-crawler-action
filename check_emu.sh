@@ -10,7 +10,6 @@ function check_emulator_status () {
 
   while true; do
     result=$(adb shell getprop sys.boot_completed 2>&1)
-
     if [ "$result" == "1" ]; then
       printf "\e[K${G}==> \u2713 Emulator is ready : '$result'           ${NC}\n"
       adb devices -l

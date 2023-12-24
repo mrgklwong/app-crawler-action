@@ -7,7 +7,6 @@ YE='\033[1;33m'
 NC='\033[0m' # No Color
 
 emulator_name=${EMULATOR_NAME}
-
 function check_hardware_acceleration() {
     if [[ "$HW_ACCEL_OVERRIDE" != "" ]]; then
         hw_accel_flag="$HW_ACCEL_OVERRIDE"
