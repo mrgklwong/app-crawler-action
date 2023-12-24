@@ -1,5 +1,5 @@
 name: 'App Crawler'
-description: 'Greet someone'
+description: 'Android App Crawler'
 inputs:
   who-to-greet:  # id of input
     description: 'Who to greet'

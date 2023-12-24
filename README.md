@@ -1,8 +1,18 @@
+<div align="center">
+   :calling: :octocat:
+</div>
+<h1 align="center">
+  app-crawler-action
+</h1>
+
 # app-crawler-action
 
 Github action which runs android app crawler action.
 Uses the https://developer.android.com/studio/test/other-testing-tools/app-crawler 
 and inspired after reading https://medium.com/@Amr.sa/the-ultimate-guide-for-cross-platform-e2e-test-for-native-mobile-app-b87b5949ff45
+
+As mentioned on the android site
+`The crawler runs alongside your app, automatically issuing actions (tap, swipe, etc.) to explore the state-space of your app. The crawl terminates automatically when there are no more unique actions to perform, the app crashes, or a timeout you designate is reached.`
 
 
 
