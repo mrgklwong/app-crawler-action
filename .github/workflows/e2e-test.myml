@@ -9,7 +9,7 @@ jobs:
       - name: '📳⤵️ Download of Test App'
         run: curl -o app.apk "https://github.com/webdriverio/native-demo-app/releases/download/v0.4.0/Android-NativeDemoApp-0.4.0.apk"
       - name: '📲 App Crawl'
-        uses: mrgklwong/app-crawler-action@v7
+        uses: mrgklwong/app-crawler-action@v8
         with:
           app-package-name: 'com.wdiodemoapp'
           app-location: 'app.apk'
