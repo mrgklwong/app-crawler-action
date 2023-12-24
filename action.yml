@@ -49,6 +49,7 @@ runs:
     - run: echo "no" | avdmanager --verbose create avd --force -n ${{ inputs.EMULATOR_NAME }} --abi "${{ inputs.ANDROID_TARGET }}/${{ inputs.ANDROID_ARCH }}" -k "system-images;android-${{ inputs.API_LEVEL }};${{ inputs.ANDROID_TARGET }};${{ inputs.ANDROID_ARCH }}"
       shell: bash
     - run: ls -a
+      shell: bash
     - run: ./start_emu_headless.sh
       shell: bash
     - run: ./check_emu.sh
