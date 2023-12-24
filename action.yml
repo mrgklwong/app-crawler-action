@@ -1,41 +1,68 @@
-name: 'App Crawler'
-description: 'Crawls Android App Using Jetpack App Crawler'
+name: 'app-crawler'
+description: 'GitHub action that runs the Android Studio Jetpack App-Crawler. Details are located: https://developer.android.com/studio/test/other-testing-tools/app-crawler'
 inputs:
+  ANDROID_ARCH:
+    description: 'pick for now x86_64'
+    required: false
+    default: x86_64
+  ANDROID_TARGET:
+    description: 'use google api playstore for now'
+    required: false
+    default: google_apis_playstore
+  API_LEVEL:
+    description: 'user 28 for now'
+    required: false
+    default: '28'
+  ANDROID_BUILD_TOOLS_VERSION:
+    description: 'use 28.0.3 for now'
+    required: false
+    default: 28.0.3
+  EMULATOR_TIMEOUT:
+    description: 'User 350 for now'
+    required: false
+    default: '350'
+  EMULATOR_NAME:
+    description: 'use nexus for now'
+    required: false
+    default: nexus
   app-location:
     description: 'Provide your app location'
     required: true
-    default: '/example/debug.apk'
   app-package-name:
     description: 'Provide your app package name'
     required: true
-    default: 'com.wdiodemoapp'
 runs:
-  env:
-    ANDROID_ARCH: x86_64
-    ANDROID_TARGET: google_apis_playstore
-    API_LEVEL: 28
-    ANDROID_BUILD_TOOLS_VERSION: 28.0.3
-    ANDROID_SDK_PACKAGES: system-images;android-28;google_apis_playstore;x86_64 platforms;android-28 build-tools;28.0.3 platform-tools emulator
-    EMULATOR_TIMEOUT: 350
-    EMULATOR_NAME: nexus
   using: "composite"
   steps:
+    - run: echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ inputs.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
+      shell: bash
     - run: |
-        echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
-    - run: |
-        yes Y | sdkmanager --licenses
-        sdkmanager --install ${ANDROID_SDK_PACKAGES}
-    - run: |
-        echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
-    - run: |
-        chmod +x ./start_emu_headless.sh
-        EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
-    - run: |
-        chmod a+x ./check_emu.sh
-        ./check_emu.sh
-    - run: | 
-        curl -sS https://dl.google.com/appcrawler/beta1/app-crawler.zip > file.zip
-        unzip file.zip                                 
-        rm file.zip
-    - run: |
-        java -jar app-crawler/crawl_launcher.jar --apk-file ${{inputs.app-location}} --android-sdk $ANDROID_HOME/ --app-package-name ${{ inputs.app-package-name }}
+        echo Y | sdkmanager --licenses
+        sdkmanager --install 'system-images;android-28;google_apis_playstore;x86_64'
+        sdkmanager --install 'platforms;android-28'
+        sdkmanager --install 'build-tools;28.0.3'
+        sdkmanager --install 'platform-tools'
+        sdkmanager --install 'emulator'
+      shell: bash
+    - run: echo "no" | avdmanager --verbose create avd --force -n ${{ inputs.EMULATOR_NAME }} --abi "${{ inputs.ANDROID_TARGET }}/${{ inputs.ANDROID_ARCH }}" -k "system-images;android-${{ inputs.API_LEVEL }};${{ inputs.ANDROID_TARGET }};${{ inputs.ANDROID_ARCH }}"
+      shell: bash
+    - run: chmod +x ./start_emu_headless.sh
+      shell: bash
+    - run: EMULATOR_TIMEOUT=${{ inputs.EMULATOR_TIMEOUT }} EMULATOR_NAME=${{ inputs.EMULATOR_NAME }} ./start_emu_headless.sh
+      shell: bash
+    - run: chmod a+x ./check_emu.sh
+      shell: bash
+    - run: ./check_emu.sh
+      shell: bash
+    - run:  curl -sS https://dl.google.com/appcrawler/beta1/app-crawler.zip > file.zip
+      shell: bash
+    - run: echo A | unzip file.zip
+      shell: bash
+    - run: java -jar app-crawler/crawl_launcher.jar --apk-file ${{inputs.app-location}} --android-sdk $ANDROID_HOME/ --app-package-name ${{ inputs.app-package-name }}
+      shell: bash
+      continue-on-error: true
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: Crawl-Report.log
+        path: app-crawler/crawl_output/*.*
