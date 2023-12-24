@@ -1,4 +1,4 @@
-name: 'test'
+name: 'App Crawler'
 description: 'Greet someone'
 inputs:
   who-to-greet:  # id of input
