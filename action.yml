@@ -33,6 +33,10 @@ inputs:
     description: 'Provide your app package name'
     required: true
     default: com.wdiodemoapp
+outputs:
+  random-number:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
 runs:
   using: "composite"
   steps:
@@ -48,11 +52,16 @@ runs:
       shell: bash
     - run: echo "no" | avdmanager --verbose create avd --force -n ${{ inputs.EMULATOR_NAME }} --abi "${{ inputs.ANDROID_TARGET }}/${{ inputs.ANDROID_ARCH }}" -k "system-images;android-${{ inputs.API_LEVEL }};${{ inputs.ANDROID_TARGET }};${{ inputs.ANDROID_ARCH }}"
       shell: bash
-    - run: emu_start.sh
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
-    - run: emu_check.sh
+    - run: EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ${{ github.action_path }}/emu_start.sh
+      env:
+        EMULATOR_TIMEOUT: ${{ inputs.EMULATOR_TIMEOUT }}
+        EMULATOR_NAME: ${{ inputs.EMULATOR_NAME }}
       shell: bash
-    - run:  curl -sS https://dl.google.com/appcrawler/beta1/app-crawler.zip > file.zip
+    - run: ${{ github.action_path }}/emu_check.sh
+      shell: bash
+    - run: curl -sS https://dl.google.com/appcrawler/beta1/app-crawler.zip > file.zip
       shell: bash
     - run: echo A | unzip file.zip
       shell: bash
