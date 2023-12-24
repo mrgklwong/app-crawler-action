@@ -50,9 +50,9 @@ runs:
       shell: bash
     - run: ls -a
       shell: bash
-    - run: ./start_emu_headless.sh
+    - run: start_emu.sh
       shell: bash
-    - run: ./check_emu.sh
+    - run: check_emu.sh
       shell: bash
     - run:  curl -sS https://dl.google.com/appcrawler/beta1/app-crawler.zip > file.zip
       shell: bash
