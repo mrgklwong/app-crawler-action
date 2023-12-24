@@ -52,13 +52,9 @@ runs:
       shell: bash
     - run: echo "no" | avdmanager --verbose create avd --force -n ${{ inputs.EMULATOR_NAME }} --abi "${{ inputs.ANDROID_TARGET }}/${{ inputs.ANDROID_ARCH }}" -k "system-images;android-${{ inputs.API_LEVEL }};${{ inputs.ANDROID_TARGET }};${{ inputs.ANDROID_ARCH }}"
       shell: bash
-    - run: chmod +x ./start_emu_headless.sh
-      shell: bash
     - run: EMULATOR_TIMEOUT=${{ inputs.EMULATOR_TIMEOUT }} EMULATOR_NAME=${{ inputs.EMULATOR_NAME }} ./start_emu_headless.sh
       shell: bash
-    - run: chmod a+x ./check_emu.sh
-      shell: bash
-    - run: ./check_emu.sh
+    - run: check_emu.sh
       shell: bash
     - run:  curl -sS https://dl.google.com/appcrawler/beta1/app-crawler.zip > file.zip
       shell: bash
