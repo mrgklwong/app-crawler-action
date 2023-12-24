@@ -1,6 +1,10 @@
-name: 'app-crawler'
-description: 'GitHub action that runs the Android Studio Jetpack App-Crawler. Details are located: https://developer.android.com/studio/test/other-testing-tools/app-crawler'
+name: 'test'
+description: 'Greet someone'
 inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
   ANDROID_ARCH:
     description: 'pick for now x86_64'
     required: false
@@ -28,9 +32,11 @@ inputs:
   app-location:
     description: 'Provide your app location'
     required: true
+    default: debug.apk
   app-package-name:
     description: 'Provide your app package name'
     required: true
+    default: com.wdiodemoapp
 runs:
   using: "composite"
   steps:
