@@ -50,7 +50,7 @@ runs:
       shell: bash
     - run: |
         chmod +x ./start_emu_headless.sh
-        ./start_emu_headless.sh
+        EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
       shell: bash
     - run: |
         chmod a+x ./check_emu.sh
