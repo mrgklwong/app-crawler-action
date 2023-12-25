@@ -17,6 +17,7 @@ As mentioned on the android site
 
 
 ## Usage
+:warning: Would strongly recommend using `runs-on: macos-latest` . It has more RAM than the unix counterparts within GitHub.
 
 In your GitHub action, to app crawl your apk on a emulator:
 
@@ -48,3 +49,5 @@ In your GitHub action, to app crawl your apk on a emulator:
     EMULATOR_TIMEOUT: '350'
     EMULATOR_NAME: nexus
 ```
+
+Example Within Workflow can be found in the e2e.yml
