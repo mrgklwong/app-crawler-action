@@ -1,5 +1,8 @@
 name: 'App Crawler'
 description: 'Android App Crawler'
+branding:
+  icon: 'smartphone'
+  color: green
 inputs:
   ANDROID_ARCH:
     description: 'pick for now x86_64'

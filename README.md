@@ -50,4 +50,4 @@ In your GitHub action, to app crawl your apk on a emulator:
     EMULATOR_NAME: nexus
 ```
 
-Example Within Workflow can be found in the e2e.yml
+Example workflow can be found in [e2e.yml](.github/workflows/e2e.yml)
